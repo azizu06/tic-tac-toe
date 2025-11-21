@@ -53,6 +53,7 @@ h2 {
 .cell {
     /* border: 2.75px solid grey;  */
     background-color: white;
+    cursor: pointer;
 }
 
 .cell:hover {
