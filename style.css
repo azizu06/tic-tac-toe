@@ -73,6 +73,6 @@ h2 {
 
 .restart:hover {
     background-color: hsl(189, 100%, 88%);
-    transform: scale(1.2);
+    transform: scale(1.15);
     transition: 0.3s ease all;
 }
