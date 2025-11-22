@@ -25,12 +25,24 @@ const gameBoard = ( () => {
         message = `${name}'s turn`;
     };
 
+    const printBoard = () => {
+        let string = '';
+        for(let i = 0; i < board.length; i++){
+            string += `${board[i]} | `; 
+            if(i%3 === 2){
+                console.log(string);
+                string = '';
+            }
+        }
+    };
+
     return {
         editBoard,
         getBoard,
         editMsg,
         getMsg,
-        restartGame
+        restartGame,
+        printBoard
     };
 })();
 
@@ -56,7 +68,9 @@ const gameController = ( (
     const getActive = () => activePlayer;
 
     const turnMessage = () => {
+        board.printBoard();
         board.editMsg(`${getActive().name}'s turn`);
+        console.log(board.getMsg());
     };
 
     const checkWinner = () => {
@@ -70,33 +84,38 @@ const gameController = ( (
             [0,4,8],
             [2,4,6]
         ];
+        let score = 0
         for(let i = 0; i < winCombos.length; i++){
-            let score = 0;
+            score = 0;
             for(let j = 0; j < 3; j++){
-                if(board[winCombos[j]] === getActive().marker){
-                    score+=1
+                if(board.getBoard([winCombos[i][j]]) === getActive().marker){
+                    score+=1;
                 }
-                if(score === 3){
-                    return true;
-                }
+            }
+            if(score === 3){
+                return true;
             }
         }
         return false;
     }
 
     const playRound = (index) => {
+        let round = 1;
         if(board.getBoard(index) != ''){
             return;
         }
         board.editBoard(index, getActive().marker);
         if(checkWinner() === true){
             board.editMsg(`${getActive().name} wins!`);
+            console.log(board.getMsg());
             return;
         }
-        if(!board.includes('')){
+        if(round === 9){
             board.editMsg('Draw!');
+            console.log(board.getMsg());
             return;
         }
+        round++;
         switchTurn();
         turnMessage();
     };
