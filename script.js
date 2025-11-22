@@ -12,37 +12,27 @@ const gameBoard = ( () => {
 
     const getBoard = (index) => board[index];
 
+    const getBoards = () => board;
+
     const editMsg = (gameMessage) => {
         message = gameMessage;
     };
 
     const getMsg = () => message;
 
-    const restartGame = (name) => {
+    const clearBoard = () => {
         for(let i = 0; i < board.length; i++){
             board[i] = '';
-        }
-        message = `${name}'s turn`;
-    };
-
-    const printBoard = () => {
-        let string = '';
-        for(let i = 0; i < board.length; i++){
-            string += `${board[i]} | `; 
-            if(i%3 === 2){
-                console.log(string);
-                string = '';
-            }
         }
     };
 
     return {
         editBoard,
         getBoard,
+        getBoards,
         editMsg,
         getMsg,
-        restartGame,
-        printBoard
+        clearBoard,
     };
 })();
 
@@ -51,6 +41,7 @@ const gameController = ( (
     playerOne = 'Player 1',
     playerTwo = 'Player 2'
 ) => {
+    let gameRunning = true;
     const board = gameBoard;
     const Player = (name, marker) => {
         return { name, marker };
@@ -68,9 +59,15 @@ const gameController = ( (
     const getActive = () => activePlayer;
 
     const turnMessage = () => {
-        board.printBoard();
         board.editMsg(`${getActive().name}'s turn`);
-        console.log(board.getMsg());
+    };
+
+    const restartGame = () => {
+        board.clearBoard();
+        activePlayer = players[0];
+        gameRunning = true;
+        round = 0;
+        board.editMsg(`${getActive().name}'s turn`);
     };
 
     const checkWinner = () => {
@@ -98,29 +95,71 @@ const gameController = ( (
         }
         return false;
     }
-
+    let round = 0
     const playRound = (index) => {
-        let round = 1;
+        if(gameRunning === false){
+            return;
+        }
         if(board.getBoard(index) != ''){
             return;
         }
         board.editBoard(index, getActive().marker);
+        round++;
         if(checkWinner() === true){
             board.editMsg(`${getActive().name} wins!`);
-            console.log(board.getMsg());
+            gameRunning = false;
             return;
         }
         if(round === 9){
             board.editMsg('Draw!');
-            console.log(board.getMsg());
+            gameRunning = false;
             return;
         }
-        round++;
         switchTurn();
         turnMessage();
     };
     turnMessage();
 
-    return { playRound, getActive };
+    return { 
+        playRound, 
+        getActive,
+        getBoards: board.getBoards,
+        restartGame
+    };
 
+})();
+
+const displayController = ( () => {
+    const game = gameController;
+    const board = gameBoard;
+    const displayMsg = document.querySelector(".message");
+    const restartBtn = document.querySelector(".restart");
+    const cells = document.querySelectorAll(".cell");
+
+    const updateScreen = () => {
+        const newBoard = game.getBoards();
+        cells.forEach(cell => {
+            cell.innerText = '';
+        });
+        displayMsg.innerText = board.getMsg();
+        cells.forEach((cell, index) => {
+                cell.innerHTML = newBoard[index];
+        });
+    }
+    displayMsg.innerText = board.getMsg();
+
+    const clickCell = (e) => {
+        const index = e.target.dataset.index;
+        game.playRound(index);
+        updateScreen();
+    };
+
+    cells.forEach(cell => {
+        cell.addEventListener("click", clickCell);
+    });
+
+    restartBtn.addEventListener("click", () => {
+        game.restartGame();
+        updateScreen();
+    });
 })();
