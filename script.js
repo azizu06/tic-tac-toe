@@ -184,5 +184,4 @@ const displayController = ( () => {
         game.restartGame();
         updateScreen();
     });
-
 })();
