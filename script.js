@@ -32,25 +32,26 @@ const gameBoard = ( () => {
         getBoards,
         editMsg,
         getMsg,
-        clearBoard,
+        clearBoard
     };
 })();
 
 
-const gameController = ( (
-    playerOne = 'Player 1',
-    playerTwo = 'Player 2'
-) => {
+const gameController = ( () => {
     let gameRunning = true;
     const board = gameBoard;
     const Player = (name, marker) => {
         return { name, marker };
     }
-    const players = [
-        Player(playerOne, 'X'),
-        Player(playerTwo, 'O')
-    ];
-    let activePlayer = players[0];
+    let players = [];
+    let activePlayer;
+    const setNames = (name1, name2) => {
+        players = [
+            Player(name1, 'X'),
+            Player(name2, 'O')
+        ];
+        activePlayer = players[0];
+    };
 
     const switchTurn = () => {
         activePlayer = activePlayer === players[0] ? players[1] : players[0];
@@ -118,13 +119,18 @@ const gameController = ( (
         switchTurn();
         turnMessage();
     };
-    turnMessage();
 
+    const startGame = () => {
+        turnMessage();
+    }
+    
     return { 
         playRound, 
         getActive,
         getBoards: board.getBoards,
-        restartGame
+        restartGame,
+        setNames,
+        startGame
     };
 
 })();
@@ -135,6 +141,10 @@ const displayController = ( () => {
     const displayMsg = document.querySelector(".message");
     const restartBtn = document.querySelector(".restart");
     const cells = document.querySelectorAll(".cell");
+    const dialog = document.querySelector(".dialog");
+    const form = document.querySelector(".form");
+    const playerOne = document.querySelector(".player1");
+    const playerTwo = document.querySelector(".player2");
 
     const updateScreen = () => {
         const newBoard = game.getBoards();
@@ -146,13 +156,25 @@ const displayController = ( () => {
                 cell.innerHTML = newBoard[index];
         });
     }
-    displayMsg.innerText = board.getMsg();
 
     const clickCell = (e) => {
         const index = e.target.dataset.index;
         game.playRound(index);
         updateScreen();
     };
+
+    dialog.showModal();
+    form.addEventListener("submit", (e) => {
+        e.preventDefault();
+        if(!form.checkValidity()){
+            form.reportValidity();
+            return;
+        }
+        game.setNames(playerOne.value, playerTwo.value);
+        dialog.close();
+        game.startGame();
+        displayMsg.innerText = board.getMsg();
+    })
 
     cells.forEach(cell => {
         cell.addEventListener("click", clickCell);
@@ -162,4 +184,5 @@ const displayController = ( () => {
         game.restartGame();
         updateScreen();
     });
+
 })();
