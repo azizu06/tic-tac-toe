@@ -81,7 +81,7 @@ h1 {
 }
 
 h2 {
-    font-size: clamp(18px, 2vw, 22px);
+    font-size: clamp(24px, 3vw, 28px);
     font-weight: 600;
     letter-spacing: 0.03em;
     text-transform: uppercase;
@@ -165,6 +165,89 @@ h2 {
 .restart:active {
     transform: translateY(0);
     box-shadow: 0 10px 18px rgba(58, 111, 248, 0.35);
+}
+
+.dialog {
+    border: none;
+    border-radius: 20px;
+    padding: 0;
+    max-width: min(520px, 90vw);
+    width: 100%;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.96), rgba(242, 247, 255, 0.98));
+    box-shadow: 0 30px 80px rgba(16, 46, 112, 0.26);
+    overflow: hidden;
+    inset: 50% auto auto 50%;
+    margin: auto;
+    transform: translate(-50%,-50%);
+    position: fixed;
+}
+
+.dialog::backdrop {
+    background: rgba(6, 16, 40, 0.25);
+    backdrop-filter: blur(6px);
+}
+
+.dialog form {
+    display: grid;
+    gap: 30px;
+    padding: 26px 28px 24px;
+}
+
+.dialog h1 {
+    font-size: 22px;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    color: var(--text);
+}
+
+.dialog label {
+    font-weight: 600;
+    color: var(--subtle);
+    letter-spacing: 0.01em;
+    margin-bottom: -18px;
+}
+
+.dialog input[type="text"] {
+    padding: 12px 14px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    background: #f8faff;
+    font-size: 16px;
+    color: var(--text);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+.dialog input[type="text"]:focus {
+    outline: none;
+    border-color: rgba(58, 111, 248, 0.55);
+    box-shadow: var(--glow);
+    background: #ffffff;
+}
+
+.dialog .submit {
+    margin-top: 8px;
+    height: 52px;
+    border-radius: 14px;
+    border: none;
+    background: linear-gradient(120deg, var(--accent), #5ccffc);
+    color: #fff;
+    font-weight: 700;
+    font-size: 17px;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    box-shadow: 0 12px 30px rgba(58, 111, 248, 0.3);
+    transition: transform 0.2s ease, box-shadow 0.2s ease, filter 0.2s ease;
+}
+
+.dialog .submit:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 18px 34px rgba(58, 111, 248, 0.35);
+    filter: brightness(1.02);
+}
+
+.dialog .submit:active {
+    transform: translateY(0);
+    box-shadow: 0 10px 18px rgba(58, 111, 248, 0.3);
 }
 
 @media (max-width: 600px) {
